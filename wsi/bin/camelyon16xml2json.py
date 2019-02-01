@@ -5,7 +5,7 @@ import logging
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../../')
 
-from wsi.data.annotation import Formatter  # noqa
+from wsi.data.annotation import Formatter  # noqa引入转换格式的方法
 
 parser = argparse.ArgumentParser(description='Convert Camelyon16 xml format to'
                                  'internal json format')
@@ -16,7 +16,7 @@ parser.add_argument('json_path', default=None, metavar='JSON_PATH', type=str,
 
 
 def run(args):
-    Formatter.camelyon16xml2json(args.xml_path, args.json_path)
+    Formatter.camelyon16xml2json(args.xml_path, args.json_path)   #真正执行转换的步骤
 
 
 def main():
