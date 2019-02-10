@@ -31,22 +31,22 @@ lock = Lock()
 
 def process(opts):
     i, pid, x_center, y_center, args = opts
-    x = int(int(x_center) - args.patch_size / 2)
+    x = int(int(x_center) - args.patch_size / 2)  #求左上角定点位置
     y = int(int(y_center) - args.patch_size / 2)
-    wsi_path = os.path.join(args.wsi_path, pid + '.tif')
+    wsi_path = os.path.join(args.wsi_path, pid + '.tif')   
     slide = openslide.OpenSlide(wsi_path)
     img = slide.read_region(
         (x, y), args.level,
-        (args.patch_size, args.patch_size)).convert('RGB')
+        (args.patch_size, args.patch_size)).convert('RGB')  #这里是以level为0  xy为起点 读取 patch——size大小的区域
 
-    img.save(os.path.join(args.patch_path, str(i) + '.png'))
+    img.save(os.path.join(args.patch_path, str(i) + '.png')) #将这些patch转化为png图片保存
 
-    global lock
-    global count
+    global lock  #声明 在这个process函数内部 调用了 lock这个函数
+    global count #声明 在这个process函数内部 调用了 count这个函数
 
     with lock:
         count.value += 1
-        if (count.value) % 100 == 0:
+        if (count.value) % 100 == 0:   #当产生了100个的时候，就在log里面打印出来信息
             logging.info('{}, {} patches generated...'
                          .format(time.strftime("%Y-%m-%d %H:%M:%S"),
                                  count.value))
