@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='Generate patches from a given '
 parser.add_argument('wsi_path', default=None, metavar='WSI_PATH', type=str,
                     help='Path to the input directory of WSI files')
 parser.add_argument('coords_path', default=None, metavar='COORDS_PATH',
-                    type=str, help='Path to the input list of coordinates')
+                    type=str, help='Path to the input list of coordinates')#包含patch中心坐标的txt文件 比如 tumor—train.txt
 parser.add_argument('patch_path', default=None, metavar='PATCH_PATH', type=str,
                     help='Path to the output directory of patch images')
 parser.add_argument('--patch_size', default=768, type=int, help='patch size, '
@@ -54,21 +54,21 @@ def process(opts):
 
 def run(args):
     logging.basicConfig(level=logging.INFO)
-
+    #判断patch保存路径是否存在
     if not os.path.exists(args.patch_path):
         os.mkdir(args.patch_path)
-
+    #shutil里面的 copyfile  将tumor_train.txt复制到 新的文件夹下的list.txt
     copyfile(args.coords_path, os.path.join(args.patch_path, 'list.txt'))
 
     opts_list = []
     infile = open(args.coords_path)
-    for i, line in enumerate(infile):
-        pid, x_center, y_center = line.strip('\n').split(',')
-        opts_list.append((i, pid, x_center, y_center, args))
-    infile.close()
-
-    pool = Pool(processes=args.num_process)
-    pool.map(process, opts_list)
+    for i, line in enumerate(infile):  
+        pid, x_center, y_center = line.strip('\n').split(',')#对每一行 取 tumor的名字， x y坐标
+        opts_list.append((i, pid, x_center, y_center, args))  #将序号 坐标计入 list里面
+    infile.close()  #打开的文件关闭
+    #调用多进程  # 第一个参数是函数，第二个参数是一个迭代器，将迭代器中的数字作为参数依次传入函数中
+    pool = Pool(processes=args.num_process)#processes：使用的工作进程的数量  
+    pool.map(process, opts_list)   #调用process函数 参数为 opts_list
 
 
 def main():
