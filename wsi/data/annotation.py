@@ -10,7 +10,7 @@ np.random.seed(0)
 
 class Polygon(object):
     """
-    Polygon represented as [N, 2] array of vertices
+    Polygon represented as [N, 2] array of vertices  #这个输入应该是很多的点 构成一个多边形的很多点   主要的作用就是判断一个点是否在这多边形里面
     """
     def __init__(self, name, vertices):
         """
@@ -36,14 +36,14 @@ class Polygon(object):
         Returns:
             bool, if the coord is inside the polygon.
         """
-        return points_in_poly([coord], self._vertices)[0]   #判断一个点是否在多边形内
+        return points_in_poly([coord], self._vertices)[0]
 
     def vertices(self):
 
         return np.array(self._vertices)
 
 
-class Annotation(object):
+class Annotation(object):#在image——producer里面被调用 创建类 初始化
     """
     Annotation about the regions within WSI in terms of vertices of polygons.
     """
@@ -68,9 +68,9 @@ class Annotation(object):
 
         for annotation in annotations_json['positive']:
             name = annotation['name']
-            vertices = np.array(annotation['vertices'])
-            polygon = Polygon(name, vertices)
-            self._polygons_positive.append(polygon)
+            vertices = np.array(annotation['vertices'])#将每一个slide里面的几个annotation的点都弄出来 构成数组
+            polygon = Polygon(name, vertices)          #形成多边形
+            self._polygons_positive.append(polygon)    #将形成的多边形添加到list里面
 
         for annotation in annotations_json['negative']:
             name = annotation['name']
@@ -78,7 +78,7 @@ class Annotation(object):
             polygon = Polygon(name, vertices)
             self._polygons_negative.append(polygon)
 
-    def inside_polygons(self, coord, is_positive):    #比Annotation更进一步 来看看是在P多边形 还是N多边形
+    def inside_polygons(self, coord, is_positive):
         """
         Determine if a given coordinate is inside the positive/negative
         polygons of the annotation.
