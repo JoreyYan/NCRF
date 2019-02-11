@@ -36,7 +36,7 @@ class Polygon(object):
         Returns:
             bool, if the coord is inside the polygon.
         """
-        return points_in_poly([coord], self._vertices)[0]
+        return points_in_poly([coord], self._vertices)[0]   #判断一个点是否在多边形内
 
     def vertices(self):
 
@@ -78,7 +78,7 @@ class Annotation(object):
             polygon = Polygon(name, vertices)
             self._polygons_negative.append(polygon)
 
-    def inside_polygons(self, coord, is_positive):
+    def inside_polygons(self, coord, is_positive):    #比Annotation更进一步 来看看是在P多边形 还是N多边形
         """
         Determine if a given coordinate is inside the positive/negative
         polygons of the annotation.
