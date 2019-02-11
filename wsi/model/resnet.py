@@ -153,7 +153,7 @@ class ResNet(nn.Module):
         """
         batch_size, grid_size, _, crop_size = x.shape[0:4]
         # flatten grid_size dimension and combine it into batch dimension
-        x = x.view(-1, 3, crop_size, crop_size)
+        x = x.view(-1, 3, crop_size, crop_size)     #这样batch-size  *  grid 之后  x可以直接卷积   pytorch的2d卷积是(N, C_in,H,W) 它必须转化成4维的存在
 
         x = self.conv1(x)
         x = self.bn1(x)
@@ -167,10 +167,10 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         # feats means features, i.e. patch embeddings from ResNet
-        feats = x.view(x.size(0), -1)
-        logits = self.fc(feats)
+        feats = x.view(x.size(0), -1)                 #把卷积后的 大小 比如7*7*512 或者别的 都碾平 成一维
+        logits = self.fc(feats)                       #全连接之后是  batch_size*grid_size*1
 
-        # restore grid_size dimension for CRF
+        # restore grid_size dimension for CRF  
         feats = feats.view((batch_size, grid_size, -1))
         logits = logits.view((batch_size, grid_size, -1))
 
@@ -178,6 +178,7 @@ class ResNet(nn.Module):
             logits = self.crf(feats, logits)
 
         logits = torch.squeeze(logits)
+        # [batch_size, num_nodes, 1]
 
         return logits
 
