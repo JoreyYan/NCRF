@@ -119,7 +119,7 @@ class GridImageDataset(Dataset):
 
         # flatten the square grid
         img_flat = np.zeros(
-            (self._grid_size, 3, self._crop_size, self._crop_size),# 9*3*256*256
+            (self._grid_size, 3, self._crop_size, self._crop_size),# 9*3*224*224
             dtype=np.float32)
         label_flat = np.zeros(self._grid_size, dtype=np.float32)
 
