@@ -131,8 +131,8 @@ class Formatter(object):
             outjson: string, path to the output json format
         """
         root = ET.parse(inxml).getroot()
-        annotations_tumor = \
-            root.findall('./Annotations/Annotation[@PartOfGroup="Tumor"]')
+        annotations_tumor = \                                             #这是camelymon16里的  不同的part of group代表不同的组
+            root.findall('./Annotations/Annotation[@PartOfGroup="Tumor"]')#在新的里面 所有的part of group都是None  所以这里要改
         annotations_0 = \
             root.findall('./Annotations/Annotation[@PartOfGroup="_0"]')
         annotations_1 = \
