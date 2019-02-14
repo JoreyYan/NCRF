@@ -33,18 +33,18 @@ def run(args):
                            slide.level_dimensions[args.level]).convert('RGB')),
                            axes=[1, 0, 2])
 
-    img_HSV = rgb2hsv(img_RGB)
+    img_HSV = rgb2hsv(img_RGB)  #RGB颜色转化到 HSV颜色模型
 
-    background_R = img_RGB[:, :, 0] > threshold_otsu(img_RGB[:, :, 0])
-    background_G = img_RGB[:, :, 1] > threshold_otsu(img_RGB[:, :, 1])
-    background_B = img_RGB[:, :, 2] > threshold_otsu(img_RGB[:, :, 2])
-    tissue_RGB = np.logical_not(background_R & background_G & background_B)
-    tissue_S = img_HSV[:, :, 1] > threshold_otsu(img_HSV[:, :, 1])
+    background_R = img_RGB[:, :, 0] > threshold_otsu(img_RGB[:, :, 0])  #取出大于 OTSU的值的部分
+    background_G = img_RGB[:, :, 1] > threshold_otsu(img_RGB[:, :, 1])  #取出大于 OTSU的值的部分
+    background_B = img_RGB[:, :, 2] > threshold_otsu(img_RGB[:, :, 2])  #取出大于 OTSU的值的部分
+    tissue_RGB = np.logical_not(background_R & background_G & background_B)  #生成最终RGB
+    tissue_S = img_HSV[:, :, 1] > threshold_otsu(img_HSV[:, :, 1])#HSV的 第二项是 s s=0 只有灰度 ，这一项大概是饱和度 总之就是能观察出来颜色的厚薄
     min_R = img_RGB[:, :, 0] > args.RGB_min
     min_G = img_RGB[:, :, 1] > args.RGB_min
     min_B = img_RGB[:, :, 2] > args.RGB_min
 
-    tissue_mask = tissue_S & tissue_RGB & min_R & min_G & min_B
+    tissue_mask = tissue_S & tissue_RGB & min_R & min_G & min_B  #大于OTSU 大于最小值 大于 HSV颜色下的
 
     np.save(args.npy_path, tissue_mask)
 
